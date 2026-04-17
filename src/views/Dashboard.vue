@@ -28,7 +28,15 @@
       
       <section class="right">
         <div class="panel">
-          <h3>右侧图表区域</h3>
+          <div class="chart-section industry">
+            <IndustryIncome />
+          </div>
+          <div class="chart-section visitor">
+            <VisitorTop5 />
+          </div>
+          <div class="chart-section hotwords">
+            <HotWords />
+          </div>
         </div>
       </section>
     </main>
@@ -40,6 +48,9 @@ import JiangxiMap from '@/components/JiangxiMap.vue'
 import ScenicRanking from '@/components/ScenicRanking.vue'
 import AgeDistribution from '@/components/AgeDistribution.vue'
 import AnnualComparison from '@/components/AnnualComparison.vue'
+import IndustryIncome from '@/components/IndustryIncome.vue'
+import VisitorTop5 from '@/components/VisitorTop5.vue'
+import HotWords from '@/components/HotWords.vue'
 </script>
 
 <style scoped lang="scss">
@@ -110,12 +121,28 @@ import AnnualComparison from '@/components/AnnualComparison.vue'
         &.annual {
           flex: 1;
         }
+        
+        &.industry {
+          flex: 1;
+        }
+        
+        &.visitor {
+          flex: 1;
+        }
+        
+        &.hotwords {
+          flex: 1.2;
+        }
       }
     }
     
     .center .panel {
       display: block;
       padding: 15px;
+    }
+    
+    .right .panel {
+      padding: 10px;
     }
   }
 }
