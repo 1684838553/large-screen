@@ -1,5 +1,15 @@
 <template>
   <div class="map-wrapper">
+    <div class="notice-banner">
+      <div class="notice-content">
+        <span class="notice-icon">📢</span>
+        <div class="notice-text" v-if="currentCity">
+          <span class="city-name">{{ currentCity.name }}</span>
+          <span class="desc">人口达到</span>
+          <span class="highlight">{{ currentCity.value }}万人</span>
+        </div>
+      </div>
+    </div>
     <div ref="chartRef" class="map-container"></div>
     <div class="ranking-panel">
       <h4>人口排名 TOP5</h4>
@@ -20,14 +30,34 @@ import * as echarts from 'echarts'
 
 const chartRef = ref<HTMLDivElement>()
 let chartInstance: echarts.ECharts | null = null
+let carouselTimer: number | null = null
 
 const cityData = ref<any[]>([])
+const currentIndex = ref(0)
+
+const currentCity = computed(() => {
+  return cityData.value[currentIndex.value] || null
+})
 
 const topCities = computed(() => {
   return [...cityData.value]
     .sort((a, b) => b.value - a.value)
     .slice(0, 5)
 })
+
+const startCarousel = () => {
+  if (cityData.value.length === 0) return
+  carouselTimer = window.setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % cityData.value.length
+  }, 3000)
+}
+
+const stopCarousel = () => {
+  if (carouselTimer) {
+    clearInterval(carouselTimer)
+    carouselTimer = null
+  }
+}
 
 const initMap = async () => {
   if (!chartRef.value) return
@@ -215,6 +245,7 @@ const initMap = async () => {
     }
     
     chartInstance.setOption(option)
+    startCarousel()
   } catch (error) {
     console.error('地图初始化失败:', error)
   }
@@ -238,6 +269,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  stopCarousel()
   window.removeEventListener('resize', resizeChart)
   chartInstance?.dispose()
 })
@@ -250,14 +282,99 @@ onBeforeUnmount(() => {
   position: relative;
 }
 
+.notice-banner {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  max-width: 90%;
+  
+  .notice-content {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(
+      135deg,
+      rgba(60, 40, 20, 0.85) 0%,
+      rgba(80, 55, 30, 0.8) 30%,
+      rgba(90, 60, 35, 0.75) 50%,
+      rgba(70, 45, 25, 0.8) 70%,
+      rgba(50, 35, 20, 0.85) 100%
+    );
+    border: 1px solid rgba(180, 140, 80, 0.4);
+    border-radius: 6px;
+    padding: 12px 25px;
+    box-shadow: 
+      0 2px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 220, 150, 0.15),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+  }
+  
+  .notice-icon {
+    font-size: 20px;
+    margin-right: 10px;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  
+  .notice-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 14px;
+    min-width: 200px;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .city-name {
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .desc {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 4px;
+  }
+  
+  .highlight {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .map-container {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
+  margin-top: 50px;
 }
 
 .ranking-panel {
   position: absolute;
-  top: 20px;
+  top: 70px;
   left: 20px;
   background: linear-gradient(135deg, rgba(10, 30, 60, 0.95), rgba(20, 50, 80, 0.9));
   border: 1px solid rgba(255, 165, 0, 0.5);
