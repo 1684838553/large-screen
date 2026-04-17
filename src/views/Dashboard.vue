@@ -7,8 +7,15 @@
     <main class="content">
       <section class="left">
         <div class="panel">
-          <h3>左侧图表区域</h3>
-          <BaseChart :option="chartOption" />
+          <div class="chart-section ranking">
+            <ScenicRanking />
+          </div>
+          <div class="chart-section age">
+            <AgeDistribution />
+          </div>
+          <div class="chart-section annual">
+            <AnnualComparison />
+          </div>
         </div>
       </section>
       
@@ -29,31 +36,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import BaseChart from '@/components/BaseChart.vue'
 import JiangxiMap from '@/components/JiangxiMap.vue'
-
-const chartOption = ref({
-  title: {
-    text: '示例图表',
-    textStyle: { color: '#fff' }
-  },
-  tooltip: {},
-  xAxis: {
-    data: ['A', 'B', 'C', 'D', 'E'],
-    axisLine: { lineStyle: { color: '#fff' } }
-  },
-  yAxis: {
-    axisLine: { lineStyle: { color: '#fff' } }
-  },
-  series: [{
-    type: 'bar',
-    data: [10, 20, 30, 40, 50],
-    itemStyle: {
-      color: '#409eff'
-    }
-  }]
-})
+import ScenicRanking from '@/components/ScenicRanking.vue'
+import AgeDistribution from '@/components/AgeDistribution.vue'
+import AnnualComparison from '@/components/AnnualComparison.vue'
 </script>
 
 <style scoped lang="scss">
@@ -96,13 +82,40 @@ const chartOption = ref({
       background: rgba(0, 100, 200, 0.2);
       border: 1px solid rgba(0, 100, 200, 0.5);
       border-radius: 8px;
-      padding: 20px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
       
       h3 {
         margin-bottom: 20px;
         font-size: 18px;
         color: #409eff;
       }
+      
+      .chart-section {
+        background: rgba(10, 30, 60, 0.6);
+        border: 1px solid rgba(100, 180, 255, 0.2);
+        border-radius: 6px;
+        padding: 10px;
+        
+        &.ranking {
+          flex: 1.2;
+        }
+        
+        &.age {
+          flex: 1;
+        }
+        
+        &.annual {
+          flex: 1;
+        }
+      }
+    }
+    
+    .center .panel {
+      display: block;
+      padding: 15px;
     }
   }
 }
