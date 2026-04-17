@@ -21,6 +21,28 @@
         </li>
       </ul>
     </div>
+    <div class="stats-panel">
+      <div class="stat-card" v-for="(stat, index) in statsData" :key="index">
+        <div class="stat-title">{{ stat.title }}</div>
+        <div class="stat-content">
+          <div class="stat-icon">
+            <span>{{ stat.icon }}</span>
+          </div>
+          <div class="stat-data">
+            <div class="stat-value">
+              <span class="number">{{ stat.value }}</span>
+              <span class="unit">{{ stat.unit }}</span>
+            </div>
+            <div class="stat-trend">
+              <span class="trend-label">较上次</span>
+              <span class="trend-arrow" :class="stat.trend > 0 ? 'up' : 'down'">
+                {{ stat.trend > 0 ? '▲' : '▼' }}{{ Math.abs(stat.trend) }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -44,6 +66,30 @@ const topCities = computed(() => {
     .sort((a, b) => b.value - a.value)
     .slice(0, 5)
 })
+
+const statsData = ref([
+  {
+    title: '2022年旅游业收入',
+    icon: '💰',
+    value: '10,387.6',
+    unit: '万元',
+    trend: -7.3
+  },
+  {
+    title: '来访游客数',
+    icon: '🧳',
+    value: '622.4',
+    unit: '万人',
+    trend: -5.2
+  },
+  {
+    title: '人口出游支出',
+    icon: '💳',
+    value: '7,331.6',
+    unit: '万元',
+    trend: -3.8
+  }
+])
 
 const startCarousel = () => {
   if (cityData.value.length === 0) return
@@ -443,6 +489,105 @@ onBeforeUnmount(() => {
         font-size: 13px;
         font-weight: bold;
         text-shadow: 0 0 8px rgba(255, 165, 0, 0.5);
+      }
+    }
+  }
+}
+
+.stats-panel {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  z-index: 10;
+  
+  .stat-card {
+    background: linear-gradient(135deg, rgba(15, 30, 50, 0.95), rgba(25, 45, 70, 0.9));
+    border: 1px solid rgba(100, 180, 255, 0.3);
+    border-radius: 8px;
+    padding: 15px 20px;
+    min-width: 200px;
+    box-shadow: 
+      0 4px 20px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    
+    .stat-title {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    
+    .stat-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(20, 40, 60, 0.8);
+      border: 2px solid rgba(255, 200, 100, 0.4);
+      border-radius: 8px;
+      box-shadow: 
+        0 0 15px rgba(255, 200, 100, 0.2),
+        inset 0 0 10px rgba(255, 200, 100, 0.1);
+      
+      span {
+        font-size: 24px;
+      }
+    }
+    
+    .stat-data {
+      flex: 1;
+    }
+    
+    .stat-value {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-bottom: 5px;
+      
+      .number {
+        font-size: 22px;
+        font-weight: bold;
+        color: #ffd700;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+      }
+      
+      .unit {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+    
+    .stat-trend {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      
+      .trend-label {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      
+      .trend-arrow {
+        font-weight: bold;
+        
+        &.up {
+          color: #ff5252;
+        }
+        
+        &.down {
+          color: #4caf50;
+        }
       }
     }
   }
