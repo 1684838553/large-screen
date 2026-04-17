@@ -15,6 +15,7 @@
       <section class="center">
         <div class="panel">
           <h3>中央地图区域</h3>
+          <JiangxiMap />
         </div>
       </section>
       
@@ -30,6 +31,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BaseChart from '@/components/BaseChart.vue'
+import JiangxiMap from '@/components/JiangxiMap.vue'
 
 const chartOption = ref({
   title: {
